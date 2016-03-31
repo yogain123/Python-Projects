@@ -1,0 +1,182 @@
+import simplegui
+lstartbarpos=[20,250]
+lendbarpos=[20,350]
+
+rstartbarpos=[980,250]
+rendbarpos=[980,350]
+
+radius=10
+
+ballpos=[500,300]
+
+vel=[7,1]
+
+c1=0
+c2=0
+
+p=0
+
+q=0
+
+def tick():
+    global vel
+    if(vel[0]<0):
+        vel[0]=vel[0]-1
+    else:
+        vel[0]=vel[0]+1
+
+def restart():
+    global c1,c2,ballpos
+    c1=0
+    c2=0
+    ballpos[0]=500
+    ballpos[1]=300
+
+def keydown(key):
+    global p,q
+    if (key==simplegui.KEY_MAP["w"]):
+        lstartbarpos[1]=lstartbarpos[1]-7
+        lendbarpos[1]=lendbarpos[1]-7
+        p=1
+     
+    elif (key==simplegui.KEY_MAP["s"]):
+        lstartbarpos[1]=lstartbarpos[1]+7
+        lendbarpos[1]=lendbarpos[1]+7
+        p=2
+     
+    elif (key==simplegui.KEY_MAP["up"]):
+        rstartbarpos[1]=rstartbarpos[1]-7
+        rendbarpos[1]=rendbarpos[1]-7
+        q=3
+     
+    elif (key==simplegui.KEY_MAP["down"]):
+        rstartbarpos[1]=rstartbarpos[1]+7
+        rendbarpos[1]=rendbarpos[1]+7
+        q=4
+        
+def keyup(key):
+    global p,q
+    if (key==simplegui.KEY_MAP["w"]):
+        lstartbarpos[1]=lstartbarpos[1]
+        lendbarpos[1]=lendbarpos[1]
+        p=5
+        
+     
+    if (key==simplegui.KEY_MAP["s"]):
+        lstartbarpos[1]=lstartbarpos[1]
+        lendbarpos[1]=lendbarpos[1]
+        p=6
+     
+    if (key==simplegui.KEY_MAP["up"]):
+        rstartbarpos[1]=rstartbarpos[1]
+        rendbarpos[1]=rendbarpos[1]
+        q=7
+     
+    if (key==simplegui.KEY_MAP["down"]):
+        rstartbarpos[1]=rstartbarpos[1]
+        rendbarpos[1]=rendbarpos[1]
+        q=8
+        
+    
+
+
+def draw(canvas):
+    global c1,c2,vel,p, lstartbarpos,lendbarpos,rstartbarpos,rendbarpos
+    canvas.draw_line([500,0],[500,600],3,"red")
+    canvas.draw_line([10,0],[10,600],3,"red")
+    canvas.draw_line([990,0],[990,600],3,"red")
+    
+    if (p==1):
+        lstartbarpos[1]=lstartbarpos[1]-5
+        lendbarpos[1]=lendbarpos[1]-5
+        
+     
+    if (p==2):
+        lstartbarpos[1]=lstartbarpos[1]+5
+        lendbarpos[1]=lendbarpos[1]+5
+        
+        
+    if (q==3):   
+        rstartbarpos[1]=rstartbarpos[1]-5
+        rendbarpos[1]=rendbarpos[1]-5
+        
+     
+    if(q==4):
+        rstartbarpos[1]=rstartbarpos[1]+5
+        rendbarpos[1]=rendbarpos[1]+5
+        
+        
+
+       
+    if (p==5 or p==6):
+        lstartbarpos[1]=lstartbarpos[1]
+        lendbarpos[1]=lendbarpos[1]
+        
+  
+     
+    if (q==7 or q==8):
+        rstartbarpos[1]=rstartbarpos[1]
+        rendbarpos[1]=rendbarpos[1]
+        
+     
+
+        
+        
+    
+
+    
+    canvas.draw_line(lstartbarpos,lendbarpos,20,"white")
+    canvas.draw_line(rstartbarpos,rendbarpos,20,"white")
+    
+  
+        
+        
+    
+    ballpos[0]=ballpos[0]+vel[0]
+    ballpos[1]=ballpos[1]+vel[1]
+    
+    if(ballpos[1]<=radius):
+        vel[1]=-vel[1]
+    elif(ballpos[1]>=599-radius):
+        vel[1]=-vel[1]
+    
+    canvas.draw_circle(ballpos,radius,25,"yellow")
+    
+    canvas.draw_text(str(c1),[300,100],50,"green")
+    canvas.draw_text(str(c2),[700,100],50,"green")
+    
+    
+    if(ballpos[1]>rstartbarpos[1] and ballpos[1]<rendbarpos[1] and ballpos[0]>960-radius):
+        vel[0]=-vel[0]
+        
+    elif(ballpos[1]>lstartbarpos[1] and ballpos[1]<lendbarpos[1] and  ballpos[0]<40+radius):
+        vel[0]=-vel[0]
+        
+    elif(ballpos[0]>1000):
+    
+        ballpos[0]=500
+        ballpos[1]=300
+        c1+=1
+        vel[0]=7
+        
+    elif(ballpos[0]<0):
+        
+        ballpos[0]=500
+        ballpos[1]=300
+        c2+=1
+        vel[0]=7
+        
+    
+    
+
+
+
+
+frame=simplegui.create_frame("PONG",1000,600)
+frame.set_keydown_handler(keydown)
+timer=simplegui.create_timer(1000,tick)
+frame.add_button("RESTART",restart,200)
+frame.set_keyup_handler(keyup)
+frame.set_draw_handler(draw)
+frame.start()
+timer.start()
